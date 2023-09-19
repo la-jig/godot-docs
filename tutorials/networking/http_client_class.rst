@@ -1,4 +1,4 @@
-:article_outdated: True
+:article_outdated: False
 
 .. _doc_http_client_class:
 
@@ -35,12 +35,12 @@ It will connect and fetch a website.
 
  .. code-tab:: gdscript GDScript
 
-    extends SceneTree
+    extends Node
 
     # HTTPClient demo
     # This simple class can do HTTP requests; it will not block, but it needs to be polled.
 
-    func _init():
+    func _enter_tree():
         var err = 0
         var http = HTTPClient.new() # Create the Client.
 
@@ -54,7 +54,7 @@ It will connect and fetch a website.
             if not OS.has_feature("web"):
                 OS.delay_msec(500)
             else:
-                yield(Engine.get_main_loop(), "idle_frame")
+                await get_tree().process_frame
 
         assert(http.get_status() == HTTPClient.STATUS_CONNECTED) # Check if the connection was made successfully.
 
@@ -74,7 +74,7 @@ It will connect and fetch a website.
             if OS.has_feature("web"):
                 # Synchronous HTTP requests are not supported on the web,
                 # so wait for the next main loop iteration.
-                yield(Engine.get_main_loop(), "idle_frame")
+                await get_tree().process_frame
             else:
                 OS.delay_msec(500)
 
